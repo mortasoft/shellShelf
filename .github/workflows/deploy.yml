@@ -21,7 +21,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             # Navigate to the app directory
-            cd /home/ubuntu/SenderismoCR
+            cd /home/ubuntu/shellShelf
 
             # Right branch
             git checkout main
