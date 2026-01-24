@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
-// ... imports
+import Commands from './pages/Commands';
+import ScriptsPage from './pages/ScriptsPage';
+import InstructionsPage from './pages/InstructionsPage';
+import { DialogProvider } from './context/DialogContext';
+import { ThemeProvider } from './context/ThemeContext';
+import { ToastProvider } from './context/ToastContext';
+import MatrixRain from './components/MatrixRain';
 
 function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
