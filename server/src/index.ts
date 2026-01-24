@@ -218,7 +218,34 @@ app.get('/api/scripts', async (req, res) => {
     }
 });
 
-// ... (Get script content and raw endpoints remain unchanged, skipping to Save script)
+// Get script content
+app.get('/api/scripts/:filename', async (req, res) => {
+    try {
+        const { filename } = req.params;
+        const content = await fs.readFile(path.join(SCRIPTS_DIR, filename), 'utf-8');
+        const metadata: Script[] = JSON.parse(await fs.readFile(SCRIPTS_FILE, 'utf-8'));
+        const meta = metadata.find(m => m.filename === filename);
+        res.json({
+            filename,
+            content,
+            tags: meta ? meta.tags : []
+        });
+    } catch (e) {
+        res.status(404).json({ error: 'Script not found' });
+    }
+});
+
+// Raw script content for curl
+app.get('/api/raw/:filename', async (req, res) => {
+    try {
+        const { filename } = req.params;
+        const content = await fs.readFile(path.join(SCRIPTS_DIR, filename), 'utf-8');
+        res.setHeader('Content-Type', 'text/plain');
+        res.send(content);
+    } catch (e) {
+        res.status(404).send('Script not found');
+    }
+});
 
 // Save script
 app.post('/api/scripts', async (req, res) => {

@@ -317,7 +317,10 @@ const ScriptsPage = () => {
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => {
-                                        const command = `curl -sL ${API_BASE_URL}/raw/${selectedScript} | bash`;
+                                        const baseUrl = API_BASE_URL.startsWith('http')
+                                            ? API_BASE_URL
+                                            : `${window.location.origin}${API_BASE_URL}`;
+                                        const command = `curl -sL ${baseUrl}/raw/${selectedScript} | bash`;
                                         navigator.clipboard.writeText(command);
                                         showToast('Execution command copied to clipboard!', 'success');
                                     }}
