@@ -1,0 +1,16 @@
+Desarrollar una aplicacion en React, Vite, TypeScript, TailwindCSS, con las siguientes funcionalidades:
+
+- La aplicacion debe tener un diseño moderno y minimalista.
+- La aplicacion debe tener un diseño responsivo.
+- La aplicacion sirve para gestionar comandos de linux, y scripts.
+- Debe tener un buscador de comandos inteligente, que permita buscar por nombre, descripcion, tags, etc.
+- Debe tener un editor de scripts.
+- Debe tener un visor de scripts.
+- Debe tener un visor de comandos.
+- Debe almacenar los comandos y scripts en archivos locales.
+- Debe tener un deploy con docker y docker-compose.
+- Debe tener un README.md con las instrucciones de uso.
+- Debe tener un LICENSE con la licencia MIT.
+
+
+curl -sL http://localhost:3001/api/raw/script.sh | bash

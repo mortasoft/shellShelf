@@ -1,0 +1,62 @@
+[
+  {
+    "id": "7fc2f370-b599-4754-9290-b937dd481360",
+    "name": "Docker Compose",
+    "description": "Monta un docker",
+    "command": "docker compose up -d",
+    "tags": [
+      "docker"
+    ],
+    "lastModified": "2026-01-24T06:18:50.009Z"
+  },
+  {
+    "id": "b11b3f33-5629-42d6-b266-235a755e4686",
+    "name": "lsblk",
+    "description": "Lista los discos duros y sus particiones",
+    "command": "lsblk",
+    "tags": [
+      "disk"
+    ],
+    "lastModified": "2026-01-24T06:18:52.542Z"
+  },
+  {
+    "id": "41d8e9dc-d76b-4b9f-b1cf-e58834e2a85a",
+    "name": "Descomprimir RAR",
+    "description": "Descomprime un rar que tenga password",
+    "command": "unrar x -pMIPASSWORD './*.rar'",
+    "tags": [
+      "rar"
+    ],
+    "lastModified": "2026-01-24T06:18:54.588Z"
+  },
+  {
+    "id": "23d45e3a-9939-4b5a-9e3c-4a1fdfc094d8",
+    "name": "Grabar pantalla",
+    "description": "Tiene que instalar la libreria: sudo apt-get install libav-tools",
+    "command": "avconv -f x11grab -s 1024x768 -r 25 -i :0.0 -qscale 0 screen.mp4",
+    "tags": [
+      "screen"
+    ],
+    "lastModified": "2026-01-24T06:18:57.903Z"
+  },
+  {
+    "id": "e8971f2f-f9db-4ef9-933c-4c259c1277b0",
+    "name": "Desbloqueo con Bluetooth",
+    "description": "# http://blog.desdelinux.net/blueproximity-o-como-bloquear-tu-pc-al-alejarte-con-tu-telefono-movil/",
+    "command": "sudo apt-get install blueproximity",
+    "tags": [
+      "bluetooth"
+    ],
+    "lastModified": "2026-01-24T06:18:56.241Z"
+  },
+  {
+    "id": "e94053f2-9317-469d-a8c0-b2c7cdac0e2b",
+    "lastModified": "2026-01-24T06:31:39.436Z",
+    "name": "Crear un Servidor multimedia DLNA",
+    "description": "",
+    "command": "sudo apt-get install mediatomb",
+    "tags": [
+      "multimedia"
+    ]
+  }
+]

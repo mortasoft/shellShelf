@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+:root {
+  /* Default Theme (Modern Dark) */
+  --bg-color: #0f172a;
+  --surface-color: #1e293b;
+  --primary-color: #3b82f6;
+  --secondary-color: #64748b;
+  --accent-color: #8b5cf6;
+  --text-color: #ffffff;
+}
+
+[data-theme="matrix"] {
+  /* Matrix Theme */
+  --bg-color: #000000;
+  --surface-color: #0d1a0d;
+  --primary-color: #00ff41;
+  --secondary-color: #003b00;
+  --accent-color: #008f11;
+  --text-color: #00ff41;
+}
+
+@theme {
+  --color-background: var(--bg-color);
+  --color-surface: var(--surface-color);
+  --color-primary: var(--primary-color);
+  --color-secondary: var(--secondary-color);
+  --color-accent: var(--accent-color);
+  
+  --font-sans: Inter, sans-serif;
+  --font-mono: 'Fira Code', monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-white antialiased font-sans flex flex-col min-h-screen text-base;
+  }
+}

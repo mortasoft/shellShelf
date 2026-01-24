@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  server:
+    build: ./server
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./data:/app/data
+    restart: always
+
+  client:
+    build: ./client
+    ports:
+      - "3000:80"
+    restart: always
