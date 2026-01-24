@@ -198,7 +198,7 @@ const Commands = () => {
                             className={`
                                 px-3 py-1 rounded-full text-xs font-medium border transition-colors whitespace-nowrap
                                 ${search === tag
-                                    ? 'bg-primary border-primary text-white'
+                                    ? 'bg-primary/20 border-primary/50 text-primary'
                                     : 'bg-surface border-white/10 text-gray-400 hover:border-primary/50 hover:text-white'
                                 }
                             `}

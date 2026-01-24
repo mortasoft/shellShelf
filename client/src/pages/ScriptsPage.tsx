@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Save, Trash2, FileText, Copy, Search, Tag, Pencil } from 'lucide-react';
+import { Plus, Save, Trash2, FileText, Copy, Search, Tag, Pencil, HelpCircle } from 'lucide-react';
 import CodeEditor from '../components/CodeEditor';
 import Modal from '../components/Modal';
 import VariablesModal from '../components/VariablesModal';
@@ -43,6 +43,9 @@ const ScriptsPage = () => {
     const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
     const [renameFilename, setRenameFilename] = useState('');
 
+    // Help ModalState
+    const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
     useEffect(() => {
@@ -83,20 +86,6 @@ const ScriptsPage = () => {
         }
     };
 
-    // ... inside return ...
-    <input
-        type="text"
-        value={tagsInput}
-        onChange={(e) => {
-            setTagsInput(e.target.value);
-            const newTags = e.target.value.split(',').map(t => t.trim()).filter(Boolean);
-            setCurrentTags(newTags);
-            setHasUnsavedChanges(true);
-        }}
-        placeholder="Add tags (comma separated)..."
-        className="text-sm bg-transparent border-none text-gray-400 focus:text-white focus:outline-none w-full border-b border-transparent focus:border-white/10 transition-colors pb-0.5 font-mono"
-    />
-
     const handleSave = async (filename: string = selectedScript!) => {
         if (!filename) return;
         try {
@@ -112,8 +101,6 @@ const ScriptsPage = () => {
             setHasUnsavedChanges(false);
             fetchScripts(); // Refresh list to update tags
             showToast('Script saved successfully!', 'success');
-
-            // If we are just saving changes to current script, no UI reset needed beyond unsaved flag
         } catch (error) {
             console.error('Error saving script:', error);
         }
@@ -149,8 +136,6 @@ const ScriptsPage = () => {
             console.error('Error creating script:', error);
         }
     };
-
-    // Hooks moved to top
 
     const handleDelete = async (e: React.MouseEvent, filename: string) => {
         e.stopPropagation();
@@ -191,20 +176,29 @@ const ScriptsPage = () => {
                     <h1 className="text-3xl font-bold">Scripts</h1>
                     <p className="text-gray-400 mt-1">Manage, edit and serve your shell scripts</p>
                 </div>
-                <button
-                    onClick={() => setIsModalOpen(true)}
-                    className={`
+                <div className="flex gap-3">
+                    <button
+                        onClick={() => setIsHelpModalOpen(true)}
+                        className="p-2 text-gray-400 hover:text-white transition-colors"
+                        title="Help & Documentation"
+                    >
+                        <HelpCircle size={20} />
+                    </button>
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        className={`
                         flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ease-out
                         active:scale-95 hover:scale-105 hover:shadow-lg
                         ${theme === 'matrix'
-                            ? 'bg-green-500/20 text-green-500 border border-green-500/50 hover:bg-green-500/30 hover:shadow-[0_0_15px_rgba(34,197,94,0.5)]'
-                            : 'bg-primary text-white hover:brightness-110 shadow-primary/20'
-                        }
+                                ? 'bg-green-500/20 text-green-500 border border-green-500/50 hover:bg-green-500/30 hover:shadow-[0_0_15px_rgba(34,197,94,0.5)]'
+                                : 'bg-primary text-white hover:brightness-110 shadow-primary/20'
+                            }
                     `}
-                >
-                    <Plus size={20} />
-                    Create Script
-                </button>
+                    >
+                        <Plus size={20} />
+                        Create Script
+                    </button>
+                </div>
             </div>
 
             <div className="flex flex-1 overflow-hidden rounded-xl border border-white/10 bg-surface/50 backdrop-blur-sm">
@@ -284,11 +278,11 @@ const ScriptsPage = () => {
                                 {scripts.length === 0 ? "No scripts found. Create one!" : "No matches found."}
                             </div>
                         )}
-                    </div> {/* Closes flex-1 overflow-y-auto p-2 space-y-1 */}
-                </div> {/* Closes w-80 border-r border-white/10 flex flex-col bg-surface/30 (Sidebar List) */}
+                    </div>
+                </div>
 
                 {/* Editor Area */}
-                <div className="flex-1 pl-6 flex flex-col">
+                <div className="flex-1 pl-6 flex flex-col p-4">
                     {selectedScript ? (
                         <>
                             <div className="flex flex-col xl:flex-row xl:items-start justify-between mb-4 gap-4">
@@ -551,7 +545,48 @@ const ScriptsPage = () => {
                     </div>
                 </form>
             </Modal>
-        </div >
+
+            <Modal
+                isOpen={isHelpModalOpen}
+                onClose={() => setIsHelpModalOpen(false)}
+                title="Script Variables Guide"
+            >
+                <div className="space-y-4 text-gray-300">
+                    <p>
+                        You can use variables in your scripts to make them dynamic.
+                        When you copy the execution command, ShellShelf will detect these variables and prompt you for values.
+                    </p>
+
+                    <div className="bg-black/30 p-4 rounded-lg border border-white/10">
+                        <h4 className="font-bold text-white mb-2">Syntax</h4>
+                        <code className="text-primary font-mono block mb-2">
+                            echo "Hello, {"{{NAME}}"}!"
+                        </code>
+                        <p className="text-sm text-gray-400">
+                            Wrap your variable names in double curly braces.
+                        </p>
+                    </div>
+
+                    <div className="bg-black/30 p-4 rounded-lg border border-white/10">
+                        <h4 className="font-bold text-white mb-2">How it works</h4>
+                        <ol className="list-decimal list-inside space-y-2 text-sm">
+                            <li>Add placeholders like <code className="text-primary">{"{{IP_ADDRESS}}"}</code> or <code className="text-primary">{"{{PORT}}"}</code> in your script.</li>
+                            <li>Click the <strong>Copy Exec</strong> button.</li>
+                            <li>A popup will ask you to enter values for each detected variable.</li>
+                            <li>The generated curl command will include these values as query parameters.</li>
+                        </ol>
+                    </div>
+                </div>
+                <div className="flex justify-end mt-6">
+                    <button
+                        onClick={() => setIsHelpModalOpen(false)}
+                        className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors"
+                    >
+                        Close
+                    </button>
+                </div>
+            </Modal>
+        </div>
     );
 };
 
