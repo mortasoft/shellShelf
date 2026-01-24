@@ -2,7 +2,7 @@
 
 **ShellShelf** is a premium, self-hosted manager for your shell scripts and commands. It transforms your collection of snippets into a powerful, serve-able library with a stunning "Matrix-inspired" UI.
 
-![ShellShelf Matrix UI](https://via.placeholder.com/800x450.png?text=ShellShelf+Matrix+Theme)
+![ShellShelf Matrix UI](https://ik.imagekit.io/senderismocr/shellShelf.png?updatedAt=1769282171898)
 
 ## ✨ key Features
 
