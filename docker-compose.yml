@@ -1,12 +1,10 @@
-version: '3.8'
-
 services:
   server:
     build: ./server
     ports:
       - "3001:3001"
     volumes:
-      - ./data:/app/data
+      - shellshelf_data:/app/data
     restart: always
 
   client:
@@ -14,3 +12,6 @@ services:
     ports:
       - "3000:80"
     restart: always
+
+volumes:
+  shellshelf_data:

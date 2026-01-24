@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Terminal, FileCode, Command, Monitor, Zap, Book, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Terminal, FileCode, Command, Monitor, Zap, Book, ChevronLeft } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 interface SidebarProps {

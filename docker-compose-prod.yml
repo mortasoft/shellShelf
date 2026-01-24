@@ -2,15 +2,36 @@ version: '3.8'
 
 services:
   server:
+    container_name: shellshelf-server
     build: ./server
-    ports:
-      - "3001:3001"
+    env_file:
+      - .env
+    environment:
+      - PORT=${PORT}
     volumes:
-      - ./data:/app/data
+      - shellshelf_data:/app/data
     restart: always
+    networks:
+      - default
+      - nginxproxymanager_default
 
   client:
-    build: ./client
-    ports:
-      - "3000:80"
+    container_name: shellshelf-client
+    build:
+      context: ./client
+      args:
+        VITE_API_URL: ${VITE_API_URL}
     restart: always
+    depends_on:
+      - server
+    networks:
+      - default
+      - nginxproxymanager_default
+
+volumes:
+  shellshelf_data:
+
+
+networks:
+  nginxproxymanager_default:
+    external: true

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Search, Plus, Trash2, Edit2, Book } from 'lucide-react';
 import Modal from '../components/Modal';
 import { useDialog } from '../context/DialogContext';
@@ -11,22 +12,29 @@ interface Instruction {
     content: string;
 }
 
-const API_URL = 'http://localhost:3001/api/instructions';
+import { API_BASE_URL } from '../config';
+
+const API_URL = `${API_BASE_URL}/instructions`;
 
 const InstructionsPage = () => {
     const { theme } = useTheme();
     const { showToast } = useToast();
     const { showConfirm } = useDialog();
+    const [searchParams] = useSearchParams();
 
     const [instructions, setInstructions] = useState<Instruction[]>([]);
-    const [search, setSearch] = useState('');
+    const [search, setSearch] = useState(searchParams.get('search') || '');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingInstruction, setEditingInstruction] = useState<Instruction | null>(null);
     const [formData, setFormData] = useState({ title: '', content: '' });
 
     useEffect(() => {
         fetchInstructions();
-    }, []);
+        const searchParam = searchParams.get('search');
+        if (searchParam) {
+            setSearch(searchParam);
+        }
+    }, [searchParams]);
 
     const fetchInstructions = async () => {
         try {

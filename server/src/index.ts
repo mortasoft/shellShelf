@@ -3,9 +3,10 @@ import cors from 'cors';
 import fs from 'fs/promises';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import 'dotenv/config';
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 const DATA_DIR = path.join(__dirname, '../data');
 const COMMANDS_FILE = path.join(DATA_DIR, 'commands.json');
 const SCRIPTS_FILE = path.join(DATA_DIR, 'scripts.json');

@@ -22,8 +22,10 @@ interface Instruction {
     content: string;
 }
 
-const API_URL = 'http://localhost:3001/api/commands';
-const INSTRUCTIONS_API_URL = 'http://localhost:3001/api/instructions';
+import { API_BASE_URL } from '../config';
+
+const API_URL = `${API_BASE_URL}/commands`;
+const INSTRUCTIONS_API_URL = `${API_BASE_URL}/instructions`;
 
 const Commands = () => {
     const { theme } = useTheme();
@@ -262,7 +264,7 @@ const Commands = () => {
                                         return (
                                             <div className="flex-shrink-0">
                                                 <NavLink
-                                                    to="/instructions" // Ideally we could deep link, but for now just go there
+                                                    to={`/instructions?search=${encodeURIComponent(linkedInstr.title)}`}
                                                     className="flex items-center gap-1 text-xs text-primary hover:underline"
                                                     title={`Go to instruction: ${linkedInstr.title}`}
                                                 >

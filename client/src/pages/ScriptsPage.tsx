@@ -5,7 +5,9 @@ import { useDialog } from '../context/DialogContext';
 import { useToast } from '../context/ToastContext';
 import { useTheme } from '../context/ThemeContext';
 
-const API_URL = 'http://localhost:3001/api/scripts';
+import { API_BASE_URL } from '../config';
+
+const API_URL = `${API_BASE_URL}/scripts`;
 
 interface Script {
     filename: string;
@@ -315,7 +317,7 @@ const ScriptsPage = () => {
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => {
-                                        const command = `curl -sL http://localhost:3001/api/raw/${selectedScript} | bash`;
+                                        const command = `curl -sL ${API_BASE_URL}/raw/${selectedScript} | bash`;
                                         navigator.clipboard.writeText(command);
                                         showToast('Execution command copied to clipboard!', 'success');
                                     }}
