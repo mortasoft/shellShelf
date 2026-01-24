@@ -1,54 +1,104 @@
-# ShellShelf
+# ShellShelf 🐚
 
-A modern, minimalist application for managing shell commands and scripts.
+**ShellShelf** is a premium, self-hosted manager for your shell scripts and commands. It transforms your collection of snippets into a powerful, serve-able library with a stunning "Matrix-inspired" UI.
 
-## Features
+![ShellShelf Matrix UI](https://via.placeholder.com/800x450.png?text=ShellShelf+Matrix+Theme)
 
-- **Command Manager**: Store, tag, and search your frequently used commands.
-- **Script Editor**: Create, edit, and run (view) scripts.
-- **Modern UI**: Built with React and TailwindCSS for a sleek dark mode experience.
-- **Local Storage**: All data is stored in local files (`data/` folder).
-- **Dockerized**: Easy deployment with Docker Compose.
+## ✨ key Features
 
-## Tech Stack
+### 🚀 **Advanced Script Management**
+- **Web-based Code Editor**: Edit your shell scripts directly in the browser with syntax highlighting.
+- **Dynamic Variables**: uniquely supports `{{VARIABLE}}` syntax in scripts.
+    - When you click "Copy Exec", ShellShelf detects these variables.
+    - It prompts you for values (e.g., `IP_ADDRESS`, `OAUTH_TOKEN`).
+    - It generates a custom `curl` command with those values pre-filled as query parameters.
+- **Direct Serving**: Serve any script instantly via `curl -sL server/raw/scriptname | bash`.
+- **Renaming & Tagging**: Organize scripts with tags and easily rename files.
 
-- **Frontend**: React, TypeScript, Vite, TailwindCSS
-- **Backend**: Node.js, Express, TypeScript
-- **Deployment**: Docker, Nginx
+### 💻 **Command Library**
+- **Smart Storage**: Save complex one-liners and commands you don't want to type manually.
+- **Organization**: Filter by tags or search by name/description.
+- **One-Click Copy**: Grabs commands to your clipboard instantly.
+- **Documentation Links**: Link specific commands to longer Instruction files for context.
 
-## Getting Started
+### 🎨 **Immersive UI/UX**
+- **Theming System**: 
+    - **Matrix Mode**: Full immersion with animated "Digital Rain" background, neon green accents, and terminal aesthetics.
+    - **Default Dark**: A clean, professional dark mode.
+- **Responsive Design**: Collapsible sidebar and mobile-friendly layouts.
+- **Visual Feedback**: Toast notifications, glassmorphism effects, and "danger" states for destructive actions.
 
-### Prerequisites
+### 📚 **Knowledge Base**
+- **Instructions**: Write and store markdown documentation alongside your code.
+- **Linkable**: Connect docs to commands for a complete "Runbook" experience.
 
-- Node.js (for local dev)
-- Docker & Docker Compose (for production/containerized run)
+---
 
-### Running with Docker (Recommended)
+## 🛠️ Tech Stack
 
-1. Clone the repository.
-2. Run:
+- **Frontend**: React 18, TypeScript, TailwindCSS, Lucide Icons, Framer Motion (animations).
+- **Backend**: Node.js, Express, TypeScript.
+- **Storage**: JSON-based local storage (no database setup required).
+- **Deployment**: Docker & Docker Compose with Nginx.
+
+---
+
+## 🚀 Getting Started
+
+### Option A: Docker (Recommended)
+
+1. **Clone the repository**:
    ```bash
-   docker-compose up --build
+   git clone https://github.com/yourusername/shellshelf.git
+   cd shellshelf
    ```
-3. Open [http://localhost:3000](http://localhost:3000) for the app.
-4. The API will be available at [http://localhost:3001](http://localhost:3001).
 
-### Running Locally
+2. **Run with Docker Compose**:
+   ```bash
+   docker compose up -d --build
+   ```
 
-**Backend:**
+3. **Access the App**:
+   - Frontend: `http://localhost`:80` (or configured port)
+   - The app comes pre-configured to talk to the API internally.
+
+### Option B: Local Development
+
+**1. Backend**:
 ```bash
 cd server
 npm install
 npm run dev
+# Server runs on port 3001
 ```
 
-**Frontend:**
+**2. Frontend**:
 ```bash
 cd client
 npm install
 npm run dev
+# Client runs on localhost:5173 (usually)
 ```
 
-## License
+---
 
-MIT
+## 💡 Usage Guide
+
+### Dynamic Script Variables
+1. Create a script: `deploy.sh`
+2. Add content: 
+   ```bash
+   #!/bin/bash
+   echo "Deploying to {{ENV}}..."
+   ```
+3. Click **Copy Exec**.
+4. Enter `Production` when prompted.
+5. Paste the generated command:
+   ```bash
+   curl -sL http://localhost/api/raw/deploy.sh?ENV=Production | bash
+   ```
+
+---
+
+## 📄 License
+MIT License.
