@@ -1,5 +1,6 @@
 services:
   server:
+    container_name: shellshelf-server
     build: ./server
     ports:
       - "3001:3001"
@@ -8,6 +9,7 @@ services:
     restart: always
 
   client:
+    container_name: shellshelf-client
     build: ./client
     ports:
       - "3000:80"

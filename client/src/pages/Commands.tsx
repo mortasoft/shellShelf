@@ -107,7 +107,8 @@ const Commands = () => {
     const handleDelete = async (id: string) => {
         const confirmed = await showConfirm('Are you sure you want to delete this command?', {
             confirmText: 'Delete',
-            title: 'Delete Command'
+            title: 'Delete Command',
+            variant: 'danger'
         });
         if (!confirmed) return;
 

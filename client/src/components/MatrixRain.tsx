@@ -68,7 +68,7 @@ const MatrixRain = () => {
     return (
         <canvas
             ref={canvasRef}
-            className="fixed inset-0 z-[-1] opacity-50 pointer-events-none"
+            className="fixed inset-0 z-[-1] opacity-90 pointer-events-none"
         />
     );
 };

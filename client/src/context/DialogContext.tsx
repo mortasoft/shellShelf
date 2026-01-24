@@ -7,6 +7,7 @@ interface DialogOptions {
     confirmText?: string;
     cancelText?: string;
     type?: 'alert' | 'confirm';
+    variant?: 'primary' | 'danger';
 }
 
 interface DialogContextType {
@@ -36,6 +37,7 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 title: 'Alert',
                 confirmText: 'OK',
                 type: 'alert',
+                variant: 'primary',
                 ...opts,
             });
             resolveRef.current = () => resolve();
@@ -51,6 +53,7 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 confirmText: 'Yes',
                 cancelText: 'Cancel',
                 type: 'confirm',
+                variant: 'primary',
                 ...opts,
             });
             resolveRef.current = resolve;
@@ -66,6 +69,13 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const handleCancel = () => {
         setIsOpen(false);
         resolveRef.current(false);
+    };
+
+    const getButtonClass = () => {
+        if (options.variant === 'danger') {
+            return "px-6 py-2 bg-red-500 hover:bg-red-600 rounded-lg font-medium text-white transition-colors shadow-lg shadow-red-500/20";
+        }
+        return "px-6 py-2 bg-primary hover:brightness-110 rounded-lg font-medium text-white transition-all shadow-lg shadow-primary/20";
     };
 
     return (
@@ -89,7 +99,7 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                         )}
                         <button
                             onClick={handleConfirm}
-                            className="px-6 py-2 bg-primary hover:bg-blue-600 rounded-lg font-medium text-white transition-colors"
+                            className={getButtonClass()}
                         >
                             {options.confirmText || 'OK'}
                         </button>

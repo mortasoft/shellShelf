@@ -236,10 +236,20 @@ app.get('/api/scripts/:filename', async (req, res) => {
 });
 
 // Raw script content for curl
+// Raw script content for curl with variable substitution
 app.get('/api/raw/:filename', async (req, res) => {
     try {
         const { filename } = req.params;
-        const content = await fs.readFile(path.join(SCRIPTS_DIR, filename), 'utf-8');
+        let content = await fs.readFile(path.join(SCRIPTS_DIR, filename), 'utf-8');
+
+        // Replace variables defined in query params
+        // Example: ?IP=1.1.1.1 will replace {{IP}} with 1.1.1.1
+        Object.keys(req.query).forEach(key => {
+            const value = req.query[key] as string;
+            const regex = new RegExp(`{{${key}}}`, 'g');
+            content = content.replace(regex, value);
+        });
+
         res.setHeader('Content-Type', 'text/plain');
         res.send(content);
     } catch (e) {
@@ -272,6 +282,45 @@ app.post('/api/scripts', async (req, res) => {
         res.json({ filename, success: true, lastModified });
     } catch (e) {
         res.status(500).json({ error: 'Failed to save script' });
+    }
+});
+
+// Rename script
+app.post('/api/scripts/:filename/rename', async (req, res) => {
+    try {
+        const { filename } = req.params;
+        const { newFilename } = req.body;
+
+        if (!newFilename) return res.status(400).json({ error: 'New filename required' });
+        if (filename === newFilename) return res.json({ success: true, filename });
+
+        const oldPath = path.join(SCRIPTS_DIR, filename);
+        const newPath = path.join(SCRIPTS_DIR, newFilename);
+
+        // Check if new filename exists
+        try {
+            await fs.access(newPath);
+            return res.status(409).json({ error: 'Script with this name already exists' });
+        } catch {
+            // File doesn't exist, proceed
+        }
+
+        // Rename file
+        await fs.rename(oldPath, newPath);
+
+        // Update metadata
+        const metadata: Script[] = JSON.parse(await fs.readFile(SCRIPTS_FILE, 'utf-8'));
+        const index = metadata.findIndex(m => m.filename === filename);
+        if (index >= 0) {
+            metadata[index].filename = newFilename;
+            metadata[index].lastModified = new Date().toISOString();
+            await fs.writeFile(SCRIPTS_FILE, JSON.stringify(metadata, null, 2));
+        }
+
+        res.json({ success: true, newFilename });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: 'Failed to rename script' });
     }
 });
 
