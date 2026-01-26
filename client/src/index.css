@@ -10,7 +10,7 @@
   --text-color: #ffffff;
 }
 
-[data-theme="matrix"] {
+:root[data-theme="matrix"] {
   /* Matrix Theme */
   --bg-color: #000000;
   --surface-color: #0d1a0d;

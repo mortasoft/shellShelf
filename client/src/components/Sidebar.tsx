@@ -124,7 +124,7 @@ const Sidebar = ({ isCollapsed, toggle }: SidebarProps) => {
             </div>
 
             <div className={`p-4 text-xs text-gray-500 text-center transition-all duration-300 overflow-hidden ${isCollapsed ? 'h-0 opacity-0 p-0' : 'h-auto opacity-100'}`}>
-                v1.0.5 &copy; 2026
+                v1.0.8 &copy; 2026
                 <div className="text-xs text-gray-500 text-center">Developed by <a href="https://mortasoft.com" target="_blank" rel="noopener noreferrer">Mortasoft.com</a></div>
             </div>
         </aside>

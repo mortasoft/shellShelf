@@ -25,13 +25,16 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('theme', theme);
-    }, [theme]);
 
-    // Debug Matrix Theme
-    useEffect(() => {
-        if (theme === 'matrix') {
-            console.log('Matrix theme activated');
-        }
+        // Clear any inline styles set by the critical path script in index.html
+        // This ensures normal CSS cascade rules apply after hydration
+        const root = document.documentElement;
+        root.style.removeProperty('--bg-color');
+        root.style.removeProperty('--surface-color');
+        root.style.removeProperty('--primary-color');
+        root.style.removeProperty('--secondary-color');
+        root.style.removeProperty('--accent-color');
+        root.style.removeProperty('--text-color');
     }, [theme]);
 
     return (

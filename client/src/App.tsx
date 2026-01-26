@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Commands from './pages/Commands';
@@ -11,6 +11,11 @@ import MatrixRain from './components/MatrixRain';
 
 function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <Router>
@@ -18,7 +23,7 @@ function App() {
         <DialogProvider>
           <ToastProvider>
             <MatrixRain />
-            <div className="flex min-h-screen bg-background/80 text-white transition-colors duration-300">
+            <div className={`flex min-h-screen bg-background/80 text-white ${mounted ? 'transition-colors duration-300' : ''}`}>
               <Sidebar
                 isCollapsed={isSidebarCollapsed}
                 toggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}

@@ -1,15 +1,35 @@
 <!doctype html>
 <html lang="en">
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <title>ShellShelf</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<meta charset="UTF-8" />
+<link rel="icon" type="image/png" href="/logo.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+  href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap"
+  rel="stylesheet">
+<title>ShellShelf</title>
+<script>
+  (function () {
+    const theme = localStorage.getItem('theme') || 'default';
+    document.documentElement.setAttribute('data-theme', theme);
+
+    if (theme === 'matrix') {
+      const root = document.documentElement;
+      root.style.setProperty('--bg-color', '#000000');
+      root.style.setProperty('--surface-color', '#0d1a0d');
+      root.style.setProperty('--primary-color', '#00ff41');
+      root.style.setProperty('--secondary-color', '#003b00');
+      root.style.setProperty('--accent-color', '#008f11');
+      root.style.setProperty('--text-color', '#00ff41');
+    }
+  })();
+</script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>
