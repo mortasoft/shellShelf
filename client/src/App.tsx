@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar';
 import Commands from './pages/Commands';
 import ScriptsPage from './pages/ScriptsPage';
 import InstructionsPage from './pages/InstructionsPage';
+import ComposePage from './pages/ComposePage';
 import { DialogProvider } from './context/DialogContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
@@ -33,6 +34,7 @@ function App() {
                   <Route path="/" element={<Commands />} />
                   <Route path="/scripts" element={<ScriptsPage />} />
                   <Route path="/instructions" element={<InstructionsPage />} />
+                  <Route path="/compose" element={<ComposePage />} />
                 </Routes>
               </main>
             </div>

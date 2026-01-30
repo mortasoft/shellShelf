@@ -10,8 +10,10 @@ const PORT = process.env.PORT || 3001;
 const DATA_DIR = path.join(__dirname, '../data');
 const COMMANDS_FILE = path.join(DATA_DIR, 'commands.json');
 const SCRIPTS_FILE = path.join(DATA_DIR, 'scripts.json');
+const COMPOSE_FILE = path.join(DATA_DIR, 'compose.json'); // Metadata for compose files
 const INSTRUCTIONS_FILE = path.join(DATA_DIR, 'instructions.json');
 const SCRIPTS_DIR = path.join(DATA_DIR, 'scripts');
+const COMPOSE_DIR = path.join(DATA_DIR, 'compose'); // Directory for actual yml files
 
 app.use(cors());
 app.use(express.json());
@@ -37,6 +39,12 @@ const initData = async () => {
     }
 
     try {
+        await fs.access(COMPOSE_FILE);
+    } catch {
+        await fs.writeFile(COMPOSE_FILE, JSON.stringify([], null, 2));
+    }
+
+    try {
         await fs.access(INSTRUCTIONS_FILE);
     } catch {
         await fs.writeFile(INSTRUCTIONS_FILE, JSON.stringify([], null, 2));
@@ -46,6 +54,12 @@ const initData = async () => {
         await fs.access(SCRIPTS_DIR);
     } catch {
         await fs.mkdir(SCRIPTS_DIR);
+    }
+
+    try {
+        await fs.access(COMPOSE_DIR);
+    } catch {
+        await fs.mkdir(COMPOSE_DIR);
     }
 };
 
@@ -60,6 +74,13 @@ interface Command {
 }
 
 interface Script {
+    filename: string;
+    tags: string[];
+    lastModified?: string;
+}
+
+// Re-using Script interface structure for ComposeFile
+interface ComposeFile {
     filename: string;
     tags: string[];
     lastModified?: string;
@@ -343,6 +364,155 @@ app.delete('/api/scripts/:filename', async (req, res) => {
     }
 });
 
+// --- Compose API ---
+
+// List compose files
+app.get('/api/compose', async (req, res) => {
+    try {
+        const files = await fs.readdir(COMPOSE_DIR);
+        const metadata: ComposeFile[] = JSON.parse(await fs.readFile(COMPOSE_FILE, 'utf-8'));
+
+        const result = await Promise.all(files.map(async file => {
+            const meta = metadata.find(m => m.filename === file);
+            let lastModified = meta?.lastModified;
+
+            if (!lastModified) {
+                try {
+                    const stats = await fs.stat(path.join(COMPOSE_DIR, file));
+                    lastModified = stats.mtime.toISOString();
+                } catch {
+                    lastModified = new Date().toISOString();
+                }
+            }
+
+            return {
+                filename: file,
+                tags: meta ? meta.tags : [],
+                lastModified
+            };
+        }));
+
+        res.json(result);
+    } catch (e) {
+        // If dir doesn't exist yet, return empty
+        res.json([]);
+    }
+});
+
+// Get compose file content
+app.get('/api/compose/:filename', async (req, res) => {
+    try {
+        const { filename } = req.params;
+        const content = await fs.readFile(path.join(COMPOSE_DIR, filename), 'utf-8');
+        const metadata: ComposeFile[] = JSON.parse(await fs.readFile(COMPOSE_FILE, 'utf-8'));
+        const meta = metadata.find(m => m.filename === filename);
+        res.json({
+            filename,
+            content,
+            tags: meta ? meta.tags : []
+        });
+    } catch (e) {
+        res.status(404).json({ error: 'Compose file not found' });
+    }
+});
+
+// Raw compose file content for curl/wget
+app.get('/api/raw/compose/:filename', async (req, res) => {
+    try {
+        const { filename } = req.params;
+        let content = await fs.readFile(path.join(COMPOSE_DIR, filename), 'utf-8');
+
+        // Variable substitution
+        Object.keys(req.query).forEach(key => {
+            const value = req.query[key] as string;
+            const regex = new RegExp(`{{${key}}}`, 'g');
+            content = content.replace(regex, value);
+        });
+
+        res.setHeader('Content-Type', 'text/yaml');
+        res.send(content);
+    } catch (e) {
+        res.status(404).send('Compose file not found');
+    }
+});
+
+// Save compose file
+app.post('/api/compose', async (req, res) => {
+    try {
+        const { filename, content, tags } = req.body;
+        if (!filename) return res.status(400).json({ error: 'Filename required' });
+
+        // Write content
+        await fs.writeFile(path.join(COMPOSE_DIR, filename), content || '');
+
+        const lastModified = new Date().toISOString();
+        const metadata: ComposeFile[] = JSON.parse(await fs.readFile(COMPOSE_FILE, 'utf-8'));
+        const index = metadata.findIndex(m => m.filename === filename);
+
+        if (index >= 0) {
+            if (tags) metadata[index].tags = tags;
+            metadata[index].lastModified = lastModified;
+        } else {
+            metadata.push({ filename, tags: tags || [], lastModified });
+        }
+
+        await fs.writeFile(COMPOSE_FILE, JSON.stringify(metadata, null, 2));
+
+        res.json({ filename, success: true, lastModified });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: 'Failed to save compose file' });
+    }
+});
+
+// Rename compose file
+app.post('/api/compose/:filename/rename', async (req, res) => {
+    try {
+        const { filename } = req.params;
+        const { newFilename } = req.body;
+
+        if (!newFilename) return res.status(400).json({ error: 'New filename required' });
+        if (filename === newFilename) return res.json({ success: true, filename });
+
+        const oldPath = path.join(COMPOSE_DIR, filename);
+        const newPath = path.join(COMPOSE_DIR, newFilename);
+
+        try {
+            await fs.access(newPath);
+            return res.status(409).json({ error: 'File with this name already exists' });
+        } catch {
+            // Proceed
+        }
+
+        await fs.rename(oldPath, newPath);
+
+        const metadata: ComposeFile[] = JSON.parse(await fs.readFile(COMPOSE_FILE, 'utf-8'));
+        const index = metadata.findIndex(m => m.filename === filename);
+        if (index >= 0) {
+            metadata[index].filename = newFilename;
+            metadata[index].lastModified = new Date().toISOString();
+            await fs.writeFile(COMPOSE_FILE, JSON.stringify(metadata, null, 2));
+        }
+
+        res.json({ success: true, newFilename });
+    } catch (e) {
+        res.status(500).json({ error: 'Failed to rename compose file' });
+    }
+});
+
+// Delete compose file
+app.delete('/api/compose/:filename', async (req, res) => {
+    try {
+        const { filename } = req.params;
+        await fs.unlink(path.join(COMPOSE_DIR, filename));
+        const metadata: ComposeFile[] = JSON.parse(await fs.readFile(COMPOSE_FILE, 'utf-8'));
+        const newMetadata = metadata.filter(m => m.filename !== filename);
+        await fs.writeFile(COMPOSE_FILE, JSON.stringify(newMetadata, null, 2));
+        res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ error: 'Failed to delete compose file' });
+    }
+});
 
 initData().then(() => {
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

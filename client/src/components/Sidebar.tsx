@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Terminal, FileCode, Command, Monitor, Zap, Book, ChevronLeft } from 'lucide-react';
+import { Terminal, FileCode, Command, Monitor, Zap, Book, ChevronLeft, Box } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 interface SidebarProps {
@@ -46,7 +46,8 @@ const Sidebar = ({ isCollapsed, toggle }: SidebarProps) => {
                 {[
                     { to: "/", icon: Command, label: "Commands" },
                     { to: "/scripts", icon: FileCode, label: "Scripts" },
-                    { to: "/instructions", icon: Book, label: "Instructions" }
+                    { to: "/instructions", icon: Book, label: "Instructions" },
+                    { to: "/compose", icon: Box, label: "Compose" }
                 ].map((item) => (
                     <NavLink
                         key={item.to}
