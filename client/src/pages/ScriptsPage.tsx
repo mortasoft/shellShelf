@@ -48,20 +48,6 @@ const ScriptsPage = () => {
 
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-    useEffect(() => {
-        fetchScripts();
-    }, []);
-
-    useEffect(() => {
-        if (selectedScript) {
-            loadScriptContent(selectedScript);
-        } else {
-            setContent('');
-            setCurrentTags([]);
-            setTagsInput('');
-        }
-    }, [selectedScript]);
-
     const fetchScripts = async () => {
         try {
             const res = await fetch(API_URL);
@@ -85,6 +71,20 @@ const ScriptsPage = () => {
             console.error('Error loading script:', error);
         }
     };
+
+    useEffect(() => {
+        fetchScripts();
+    }, []);
+
+    useEffect(() => {
+        if (selectedScript) {
+            loadScriptContent(selectedScript);
+        } else {
+            setContent('');
+            setCurrentTags([]);
+            setTagsInput('');
+        }
+    }, [selectedScript]);
 
     const handleSave = async (filename: string = selectedScript!) => {
         if (!filename) return;

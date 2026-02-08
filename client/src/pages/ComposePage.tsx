@@ -48,20 +48,6 @@ const ComposePage = () => {
 
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-    useEffect(() => {
-        fetchFiles();
-    }, []);
-
-    useEffect(() => {
-        if (selectedFile) {
-            loadFileContent(selectedFile);
-        } else {
-            setContent('');
-            setCurrentTags([]);
-            setTagsInput('');
-        }
-    }, [selectedFile]);
-
     const fetchFiles = async () => {
         try {
             const res = await fetch(API_URL);
@@ -85,6 +71,20 @@ const ComposePage = () => {
             console.error('Error loading compose file:', error);
         }
     };
+
+    useEffect(() => {
+        fetchFiles();
+    }, []);
+
+    useEffect(() => {
+        if (selectedFile) {
+            loadFileContent(selectedFile);
+        } else {
+            setContent('');
+            setCurrentTags([]);
+            setTagsInput('');
+        }
+    }, [selectedFile]);
 
     const handleSave = async (filename: string = selectedFile!) => {
         if (!filename) return;
