@@ -7,9 +7,10 @@ interface VariablesModalProps {
     onClose: () => void;
     variables: string[];
     onConfirm: (values: Record<string, string>) => void;
+    onCopyRaw: () => void;
 }
 
-const VariablesModal: React.FC<VariablesModalProps> = ({ isOpen, onClose, variables, onConfirm }) => {
+const VariablesModal: React.FC<VariablesModalProps> = ({ isOpen, onClose, variables, onConfirm, onCopyRaw }) => {
     const { theme } = useTheme();
     const [values, setValues] = useState<Record<string, string>>({});
 
@@ -58,6 +59,17 @@ const VariablesModal: React.FC<VariablesModalProps> = ({ isOpen, onClose, variab
                         className="px-4 py-2 rounded-lg hover:bg-white/5 text-gray-300 transition-colors"
                     >
                         Cancel
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            onCopyRaw();
+                            onClose();
+                        }}
+                        className="px-4 py-2 rounded-lg hover:bg-white/5 text-gray-300 transition-colors border border-white/10"
+                        title="Copy command without replacing variables"
+                    >
+                        Copy Raw
                     </button>
                     <button
                         type="submit"

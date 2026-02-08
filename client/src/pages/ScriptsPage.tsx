@@ -480,6 +480,14 @@ const ScriptsPage = () => {
                     navigator.clipboard.writeText(command);
                     showToast('Command with variables copied!', 'success');
                 }}
+                onCopyRaw={() => {
+                    const baseUrl = API_BASE_URL.startsWith('http')
+                        ? API_BASE_URL
+                        : `${window.location.origin}${API_BASE_URL}`;
+                    const command = `curl -sL "${baseUrl}/raw/${selectedScript}" | bash`;
+                    navigator.clipboard.writeText(command);
+                    showToast('Raw execution command copied!', 'success');
+                }}
             />
 
             <Modal
